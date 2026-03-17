@@ -1,6 +1,5 @@
 
-bharat-tv-iptv-online.edgeone.app
-
+https://bharat-tv-iptv-online.edgeone.app/
 
 
 open in chrome in desktop mode on.
