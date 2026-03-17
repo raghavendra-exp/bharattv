@@ -21,6 +21,7 @@
   --hd:56px;--sb:240px;
   --fh:'Baloo 2',sans-serif;
   --fb:'Inter',system-ui,sans-serif;
+  --ease:cubic-bezier(0.4, 0, 0.2, 1);
 }
 .lt{
   --bg:#F7F3EE;--bg2:#EDE8E0;--bg3:#E2DDD5;--card:#fff;--card-h:#F5F0EA;
@@ -58,14 +59,54 @@ img{display:block}
   width:var(--sb);flex-shrink:0;
   background:var(--bg2);border-right:1px solid var(--bdr);
   overflow-y:auto;display:flex;flex-direction:column;
-  transition:transform .25s ease;
+  transition:transform .25s var(--ease);
 }
 #main{flex:1;overflow-y:auto;min-width:0}
 #player-wrap{
   flex-shrink:0;background:var(--bg2);border-top:1px solid var(--bdr);
-  max-height:0;overflow:hidden;transition:max-height .3s ease;
+  max-height:0;overflow:hidden;transition:max-height .4s var(--ease);
 }
 #player-wrap.open{max-height:420px}
+
+/* ===== THEATER MODE ===== */
+#player-wrap.theater{
+  position:fixed;inset:0;z-index:300;max-height:100vh !important;
+  border:none;display:flex;flex-direction:column;
+  background:#000;
+}
+#player-wrap.theater #p-vid-box{
+  width:100% !important;max-width:100% !important;
+  flex:1;height:auto;
+}
+#player-wrap.theater #p-info{
+  position:absolute;bottom:0;left:0;right:0;
+  background:linear-gradient(transparent,rgba(0,0,0,.95) 30%);
+  padding:60px 24px 20px;
+  transform:translateY(100%);
+  transition:transform .3s var(--ease);
+  max-height:50vh;overflow-y:auto;z-index:5;
+}
+#player-wrap.theater:hover #p-info,
+#player-wrap.theater.info-show #p-info{
+  transform:translateY(0);
+}
+#player-wrap.theater #theater-close{display:flex}
+#theater-close{
+  display:none;position:absolute;top:16px;right:16px;z-index:310;
+  width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.12);
+  border:none;color:#fff;font-size:20px;cursor:pointer;
+  align-items:center;justify-content:center;
+  backdrop-filter:blur(8px);transition:all .2s var(--ease);
+}
+#theater-close:hover{background:rgba(255,255,255,.25);transform:scale(1.1)}
+/* Always show theater close on mobile */
+@media(max-width:700px){
+  #player-wrap.theater #theater-close{
+    display:flex;top:10px;right:10px;width:40px;height:40px;
+    background:rgba(0,0,0,.6);font-size:18px;
+  }
+  #player-wrap.theater #p-info{z-index:5}
+}
 
 /* ===== HEADER ===== */
 #menu-btn{
@@ -73,17 +114,19 @@ img{display:block}
   flex-direction:column;justify-content:center;align-items:center;gap:5px;
   cursor:pointer;flex-shrink:0;border-radius:8px;
 }
-#menu-btn span{width:20px;height:2px;background:var(--txt2);border-radius:2px;transition:all .25s}
+#menu-btn span{width:20px;height:2px;background:var(--txt2);border-radius:2px;transition:all .25s var(--ease)}
 #menu-btn.open span:nth-child(1){transform:rotate(45deg) translate(5px,5px)}
 #menu-btn.open span:nth-child(2){opacity:0}
 #menu-btn.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px)}
-#logo{display:flex;align-items:center;gap:8px;flex-shrink:0}
+#logo{display:flex;align-items:center;gap:8px;flex-shrink:0;cursor:pointer}
+#logo:hover .logo-box{transform:rotate(-8deg) scale(1.08)}
 .logo-box{
   width:34px;height:34px;border-radius:9px;flex-shrink:0;
   background:linear-gradient(135deg,#FF9933 0%,#FF6600 50%,#CC4400 100%);
   display:flex;align-items:center;justify-content:center;
   font-family:var(--fh);font-size:17px;font-weight:800;color:#fff;
   box-shadow:0 2px 8px rgba(255,153,51,.4);
+  transition:transform .25s var(--ease);
 }
 .logo-text{font-family:var(--fh);font-size:19px;font-weight:800;white-space:nowrap;
   background:linear-gradient(90deg,var(--acc) 0%,#FFD700 100%);
@@ -93,9 +136,9 @@ img{display:block}
 #srch{
   width:100%;height:34px;border-radius:17px;border:1px solid var(--bdr2);
   background:var(--bg3);color:var(--txt);padding:0 12px 0 36px;
-  font-size:13px;outline:none;transition:border-color .2s;
+  font-size:13px;outline:none;transition:border-color .2s,box-shadow .2s;
 }
-#srch:focus{border-color:var(--acc)}
+#srch:focus{border-color:var(--acc);box-shadow:0 0 0 3px rgba(255,153,51,.15)}
 #srch::placeholder{color:var(--txt3)}
 .srch-ic{position:absolute;left:11px;top:50%;transform:translateY(-50%);
   font-size:14px;color:var(--txt3);pointer-events:none}
@@ -103,9 +146,9 @@ img{display:block}
 .thm{
   padding:5px 9px;border-radius:7px;border:1px solid var(--bdr2);
   background:transparent;color:var(--txt3);cursor:pointer;
-  font-size:11px;font-weight:600;transition:all .18s;
+  font-size:11px;font-weight:600;transition:all .18s var(--ease);
 }
-.thm:hover{border-color:var(--acc);color:var(--acc)}
+.thm:hover{border-color:var(--acc);color:var(--acc);transform:translateY(-1px)}
 .thm.on{background:var(--acc);border-color:var(--acc);color:#fff}
 #stat-chip{
   display:flex;align-items:center;gap:5px;
@@ -125,16 +168,16 @@ img{display:block}
 .lang-row{padding:0 10px 12px;display:flex;flex-wrap:wrap;gap:5px}
 .lc{
   padding:4px 9px;border-radius:20px;border:1px solid var(--bdr2);
-  font-size:11px;color:var(--txt2);cursor:pointer;transition:all .18s;
+  font-size:11px;color:var(--txt2);cursor:pointer;transition:all .18s var(--ease);
 }
-.lc:hover{border-color:var(--blu);color:var(--blu)}
+.lc:hover{border-color:var(--blu);color:var(--blu);transform:translateY(-1px)}
 .lc.on{background:var(--blu);border-color:var(--blu);color:#fff;font-weight:600}
 .cat-item{
   display:flex;align-items:center;gap:9px;
   padding:8px 12px;border-radius:8px;margin:1px 8px;
-  cursor:pointer;transition:background .18s;font-size:13px;color:var(--txt2);
+  cursor:pointer;transition:all .18s var(--ease);font-size:13px;color:var(--txt2);
 }
-.cat-item:hover{background:var(--bg3);color:var(--txt)}
+.cat-item:hover{background:var(--bg3);color:var(--txt);padding-left:16px}
 .cat-item.on{background:var(--acc);color:#fff;font-weight:600}
 .cat-item.on .cc{background:rgba(255,255,255,.2);color:#fff}
 .ci{font-size:15px;width:20px;text-align:center;flex-shrink:0}
@@ -168,7 +211,7 @@ img{display:block}
 .sort-btn{
   padding:5px 10px;border-radius:7px;border:1px solid var(--bdr2);
   background:transparent;color:var(--txt3);font-size:11px;
-  font-weight:600;cursor:pointer;transition:all .18s;
+  font-weight:600;cursor:pointer;transition:all .18s var(--ease);
 }
 .sort-btn:hover,.sort-btn.on{border-color:var(--acc);color:var(--acc)}
 #stream-prog{
@@ -189,17 +232,18 @@ img{display:block}
 /* Card */
 .ch-card{
   background:var(--card);border:1px solid var(--bdr);border-radius:var(--r2);
-  overflow:hidden;cursor:pointer;transition:transform .2s,box-shadow .2s,border-color .2s;
+  overflow:hidden;cursor:pointer;transition:transform .25s var(--ease),box-shadow .25s var(--ease),border-color .25s var(--ease);
   display:flex;flex-direction:column;position:relative;
 }
-.ch-card:hover{transform:translateY(-3px);box-shadow:var(--sh);border-color:var(--bdr2)}
-.ch-card.now{border-color:var(--acc);box-shadow:0 0 0 2px var(--acc)44,var(--sh)}
+.ch-card:hover{transform:translateY(-4px) scale(1.02);box-shadow:var(--sh);border-color:var(--bdr2)}
+.ch-card:active{transform:translateY(-1px) scale(0.98)}
+.ch-card.now{border-color:var(--acc);box-shadow:0 0 0 2px rgba(255,153,51,.27),var(--sh)}
 .ch-thumb{
   height:88px;background:var(--bg3);display:flex;
   align-items:center;justify-content:center;overflow:hidden;position:relative;
 }
-.ch-thumb img{max-width:72%;max-height:72%;object-fit:contain;transition:transform .25s}
-.ch-card:hover .ch-thumb img{transform:scale(1.07)}
+.ch-thumb img{max-width:72%;max-height:72%;object-fit:contain;transition:transform .3s var(--ease)}
+.ch-card:hover .ch-thumb img{transform:scale(1.1)}
 .no-lg{
   font-family:var(--fh);font-size:22px;font-weight:800;
   color:var(--txt3);user-select:none;
@@ -207,13 +251,15 @@ img{display:block}
 .play-ov{
   position:absolute;inset:0;background:rgba(0,0,0,.55);
   display:flex;align-items:center;justify-content:center;
-  opacity:0;transition:opacity .2s;
+  opacity:0;transition:opacity .25s var(--ease);
 }
 .ch-card:hover .play-ov{opacity:1}
 .play-circle{
   width:38px;height:38px;border-radius:50%;background:var(--acc);
   display:flex;align-items:center;justify-content:center;
+  transition:transform .2s var(--ease);
 }
+.ch-card:hover .play-circle{transform:scale(1.1)}
 .play-tri{width:0;height:0;border:8px solid transparent;
   border-left:13px solid #fff;margin-left:3px}
 .live-ind{
@@ -256,9 +302,9 @@ img{display:block}
   margin:20px auto;display:none;
   padding:10px 28px;border-radius:20px;border:1px solid var(--bdr2);
   background:var(--card);color:var(--txt2);cursor:pointer;
-  font-size:13px;font-weight:600;transition:all .2s;
+  font-size:13px;font-weight:600;transition:all .2s var(--ease);
 }
-#load-more:hover{border-color:var(--acc);color:var(--acc)}
+#load-more:hover{border-color:var(--acc);color:var(--acc);transform:translateY(-2px)}
 #load-more.show{display:block}
 /* Empty */
 #empty{
@@ -278,8 +324,9 @@ img{display:block}
   position:absolute;inset:0;background:rgba(0,0,0,.75);
   display:flex;flex-direction:column;align-items:center;justify-content:center;
   gap:10px;padding:16px;text-align:center;
+  transition:opacity .3s var(--ease);
 }
-#p-overlay.hide{display:none}
+#p-overlay.hide{opacity:0;pointer-events:none}
 .spin-ring{
   width:32px;height:32px;border-radius:50%;
   border:3px solid var(--bdr2);border-top-color:var(--acc);
@@ -293,11 +340,13 @@ img{display:block}
 .pb{
   padding:6px 11px;border-radius:7px;border:1px solid var(--bdr2);
   background:transparent;color:var(--txt2);cursor:pointer;
-  font-size:11px;font-weight:600;transition:all .18s;white-space:nowrap;
+  font-size:11px;font-weight:600;transition:all .18s var(--ease);white-space:nowrap;
 }
-.pb:hover{border-color:var(--acc);color:var(--acc)}
+.pb:hover{border-color:var(--acc);color:var(--acc);transform:translateY(-1px)}
 .pb.danger{border-color:transparent;color:var(--red)}
-.pb.danger:hover{background:var(--red)22}
+.pb.danger:hover{background:rgba(255,71,87,.13)}
+.pb.theater-btn{background:var(--acc);border-color:var(--acc);color:#fff}
+.pb.theater-btn:hover{background:#e68a2e;transform:translateY(-1px)}
 #p-url{
   margin-top:8px;font-size:10px;color:var(--txt3);
   background:var(--bg3);padding:5px 8px;border-radius:6px;
@@ -314,9 +363,9 @@ img{display:block}
   text-transform:uppercase;color:var(--txt3);margin-bottom:5px}
 .un-item{
   display:flex;align-items:center;gap:8px;padding:5px 6px;
-  border-radius:7px;cursor:pointer;transition:background .18s;
+  border-radius:7px;cursor:pointer;transition:all .18s var(--ease);
 }
-.un-item:hover{background:var(--bg3)}
+.un-item:hover{background:var(--bg3);padding-left:10px}
 .un-logo{width:38px;height:28px;background:var(--bg3);border-radius:4px;
   display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0}
 .un-logo img{max-width:90%;max-height:90%;object-fit:contain}
@@ -325,9 +374,35 @@ img{display:block}
 .un-cat{font-size:10px;color:var(--txt3)}
 #copy-ok{font-size:10px;color:var(--grn);margin-left:4px;display:none}
 
+/* ===== KEYBOARD HINT ===== */
+#kb-hint{
+  position:fixed;bottom:16px;right:16px;z-index:100;
+  background:var(--bg3);border:1px solid var(--bdr);border-radius:10px;
+  padding:8px 14px;font-size:10px;color:var(--txt3);
+  opacity:0;transform:translateY(8px);
+  transition:all .3s var(--ease);pointer-events:none;
+  line-height:1.8;
+}
+#kb-hint.show{opacity:1;transform:translateY(0);pointer-events:auto}
+kbd{
+  background:var(--bg2);border:1px solid var(--bdr2);border-radius:3px;
+  padding:1px 5px;font-size:10px;font-family:monospace;color:var(--txt2);
+}
+
+/* ===== TOAST ===== */
+.toast{
+  position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);
+  background:var(--card);border:1px solid var(--bdr2);border-radius:12px;
+  padding:10px 20px;font-size:12px;font-weight:600;color:var(--txt);
+  z-index:500;box-shadow:0 8px 32px rgba(0,0,0,.4);
+  transition:transform .35s var(--ease),opacity .35s var(--ease);opacity:0;
+}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+
 /* ===== OVERLAY SIDEBAR MOBILE ===== */
 #sb-overlay{
   display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:149;
+  backdrop-filter:blur(4px);
 }
 
 /* ===== SPLASH ===== */
@@ -356,17 +431,25 @@ img{display:block}
   padding:7px 22px;border-radius:8px;background:var(--acc);
   color:#fff;border:none;font-weight:700;font-size:13px;
   cursor:pointer;width:100%;margin-top:6px;font-family:var(--fb);
+  transition:background .2s;
 }
+#sp-retry:hover{background:#e68a2e}
 
 /* ===== ANIMATIONS ===== */
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.35}}
 @keyframes spin{to{transform:rotate(360deg)}}
-@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-.card-in{animation:fadeUp .25s ease-out both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(255,153,51,.4)}50%{box-shadow:0 0 0 8px rgba(255,153,51,0)}}
+.card-in{animation:fadeUp .3s var(--ease) both}
 
 /* ===== RESPONSIVE ===== */
-@media(max-width:900px){
+@media(max-width:1100px){
   :root{--sb:220px}
+  #grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+  #p-vid-box{width:380px;max-width:45vw}
+}
+@media(max-width:900px){
+  :root{--sb:200px}
   #grid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px}
   #p-vid-box{width:320px;max-width:44vw}
 }
@@ -374,19 +457,25 @@ img{display:block}
   #menu-btn{display:flex}
   #sb{
     position:fixed;left:0;top:var(--hd);bottom:0;z-index:150;
-    transform:translateX(-100%);width:260px;
+    transform:translateX(-100%);width:280px;
   }
   #sb.open{transform:translateX(0)}
-  #sb-overlay{display:block}
   #sb-overlay.show{display:block}
   #content{padding:12px}
   #grid{grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px}
   .logo-text{font-size:16px}
   #player-wrap.open{max-height:none}
   #player-wrap{flex-direction:column}
-  #p-vid-box{width:100%;max-width:100%;height:220px;flex-shrink:0}
-  #p-info{max-height:180px;overflow-y:auto}
+  #p-vid-box{width:100% !important;max-width:100% !important;height:240px;flex-shrink:0}
+  #p-info{max-height:200px;overflow-y:auto}
   .thm{padding:4px 7px;font-size:10px}
+  #kb-hint{display:none !important}
+  /* Theater mode mobile */
+  #player-wrap.theater{flex-direction:column}
+  #player-wrap.theater #p-info{
+    position:relative;transform:none;background:rgba(0,0,0,.95);
+    padding:12px 16px;max-height:40vh;
+  }
 }
 @media(max-width:440px){
   #grid{grid-template-columns:repeat(2,1fr);gap:8px}
@@ -394,7 +483,31 @@ img{display:block}
   #srch-wrap{max-width:none;flex:1}
   .logo-text{display:none}
   #hdr-right .thm:not(.on){display:none}
+  .ch-thumb{height:72px}
 }
+@media(max-width:360px){
+  #grid{grid-template-columns:repeat(2,1fr);gap:6px}
+  .ch-info{padding:6px 8px}
+  .ch-name{font-size:11px}
+  .ch-thumb{height:64px}
+}
+/* ===== PULL TO REFRESH ===== */
+#ptr-indicator{
+  position:absolute;top:0;left:50%;transform:translateX(-50%) translateY(-60px);
+  z-index:50;display:flex;align-items:center;gap:8px;
+  background:var(--card);border:1px solid var(--bdr2);border-radius:24px;
+  padding:8px 18px;font-size:12px;font-weight:600;color:var(--txt2);
+  box-shadow:0 4px 20px rgba(0,0,0,.3);transition:transform .3s var(--ease),opacity .3s;
+  opacity:0;pointer-events:none;
+}
+#ptr-indicator.pulling{opacity:1;pointer-events:none}
+#ptr-indicator.refreshing{opacity:1;pointer-events:none}
+.ptr-spinner{width:18px;height:18px;border:2px solid var(--bdr2);border-top-color:var(--acc);
+  border-radius:50%;display:inline-block}
+#ptr-indicator.refreshing .ptr-spinner{animation:spin .6s linear infinite}
+#ptr-indicator .ptr-arrow{font-size:16px;transition:transform .2s var(--ease)}
+#ptr-indicator.ready .ptr-arrow{transform:rotate(180deg)}
+@keyframes spin{to{transform:rotate(360deg)}}
 </style>
 </head>
 <body>
@@ -417,6 +530,14 @@ img{display:block}
   </div>
 </div>
 
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- KEYBOARD HINTS -->
+<div id="kb-hint">
+  <kbd>Space</kbd> Play/Pause &nbsp; <kbd>T</kbd> Theater &nbsp; <kbd>F</kbd> Fullscreen &nbsp; <kbd>Esc</kbd> Close &nbsp; <kbd>/</kbd> Search
+</div>
+
 <!-- APP -->
 <div id="wrap">
 
@@ -431,7 +552,7 @@ img{display:block}
     </div>
     <div id="srch-wrap">
       <span class="srch-ic">🔍</span>
-      <input id="srch" type="search" placeholder="Search channels…" autocomplete="off">
+      <input id="srch" type="search" placeholder="Search channels… ( / )" autocomplete="off">
     </div>
     <div id="hdr-right">
       <div id="stat-chip">
@@ -450,6 +571,19 @@ img{display:block}
 
     <!-- SIDEBAR -->
     <nav id="sb">
+      <div class="sb-head">Country</div>
+      <div class="lang-row" id="countries">
+        <span class="lc on" data-co="IN">🇮🇳 India</span>
+        <span class="lc" data-co="US">🇺🇸 USA</span>
+        <span class="lc" data-co="GB">🇬🇧 UK</span>
+        <span class="lc" data-co="CA">🇨🇦 Canada</span>
+        <span class="lc" data-co="AE">🇦🇪 UAE</span>
+        <span class="lc" data-co="PK">🇵🇰 Pakistan</span>
+        <span class="lc" data-co="BD">🇧🇩 Bangladesh</span>
+        <span class="lc" data-co="NP">🇳🇵 Nepal</span>
+        <span class="lc" data-co="AU">🇦🇺 Australia</span>
+        <span class="lc" data-co="ALL">🌍 All Countries</span>
+      </div>
       <div class="sb-head">Language</div>
       <div class="lang-row" id="langs">
         <span class="lc on" data-l="all">All</span>
@@ -457,6 +591,14 @@ img{display:block}
         <span class="lc" data-l="bho">Bhojpuri</span>
         <span class="lc" data-l="eng">English</span>
         <span class="lc" data-l="pan">ਪੰਜਾਬੀ</span>
+        <span class="lc" data-l="ben">বাংলা</span>
+        <span class="lc" data-l="tam">தமிழ்</span>
+        <span class="lc" data-l="tel">తెలుగు</span>
+        <span class="lc" data-l="kan">ಕನ್ನಡ</span>
+        <span class="lc" data-l="mal">മലയ</span>
+        <span class="lc" data-l="mar">मराठी</span>
+        <span class="lc" data-l="guj">ગુજ</span>
+        <span class="lc" data-l="urd">اردو</span>
       </div>
       <div class="sb-head" style="margin-top:4px">Category</div>
       <div id="cats">
@@ -477,17 +619,20 @@ img{display:block}
       <div class="sb-foot">
         Data: <a href="https://github.com/iptv-org" target="_blank">iptv-org</a> · Open source<br>
         Streams load in background<br>
-        Use VLC for geo-restricted channels
+        <kbd>?</kbd> for keyboard shortcuts
       </div>
     </nav>
 
     <!-- MAIN -->
-    <main id="main">
+    <main id="main" style="position:relative">
+      <div id="ptr-indicator"><span class="ptr-arrow">↓</span><span class="ptr-text">Pull to refresh</span><div class="ptr-spinner" style="display:none"></div></div>
       <div id="content">
         <div id="pg-head">
           <div id="pg-title">All India Channels <span class="live-tag">LIVE</span></div>
           <div id="sort-row">
             <span id="count-lbl" style="font-size:11px;color:var(--txt3)"></span>
+            <button class="sort-btn on" data-s="name">A-Z</button>
+            <button class="sort-btn" data-s="live">Live First</button>
           </div>
         </div>
         <!-- Stream loading progress -->
@@ -509,6 +654,7 @@ img{display:block}
 
   <!-- PLAYER -->
   <div id="player-wrap">
+    <button id="theater-close">✕</button>
     <div id="p-vid-box">
       <video id="vid" controls playsinline></video>
       <div id="p-overlay">
@@ -520,6 +666,7 @@ img{display:block}
       <div id="p-title">—</div>
       <div id="p-sub">—</div>
       <div id="p-btns">
+        <button class="pb theater-btn" id="pb-theater">🖥 Theater Mode</button>
         <button class="pb" id="pb-fs">⛶ Fullscreen</button>
         <button class="pb" id="pb-cp">📋 Copy URL<span id="copy-ok">✓</span></button>
         <button class="pb" id="pb-vlc">▶ Open VLC</button>
@@ -548,14 +695,27 @@ const PER_PAGE = 48;
 // ===== STATE =====
 let channels=[], streams=[], logos=[], feeds=[];
 let india=[], sMap={}, lMap={};
-let cat='all', lang='all', q='', page=1, sortBy='name';
+let cat='all', lang='all', country='IN', q='', page=1, sortBy='name';
+const COUNTRY_NAMES={IN:'India',US:'USA',GB:'UK',CA:'Canada',AE:'UAE',PK:'Pakistan',BD:'Bangladesh',NP:'Nepal',AU:'Australia',ALL:'All Countries'};
 let cur=null, hls=null, streamsReady=false;
+let theaterMode=false;
+
+// ===== TOAST =====
+let toastTimer;
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>t.classList.remove('show'),2200);
+}
 
 // ===== THEME =====
 function applyTheme(t){
   document.body.className = t==='dark'?'':t;
   document.querySelectorAll('.thm').forEach(b=>b.classList.toggle('on',b.dataset.t===t));
   localStorage.setItem('btv-t',t);
+  showToast('Theme: '+(t==='lt'?'Light':t==='tri'?'Tricolor':'Dark'));
 }
 document.querySelectorAll('.thm').forEach(b=>b.addEventListener('click',()=>applyTheme(b.dataset.t)));
 applyTheme(localStorage.getItem('btv-t')||'dark');
@@ -572,8 +732,72 @@ menuBtn.addEventListener('click',()=>{
 });
 sbOv.addEventListener('click',closeSb);
 
-// ===== TIMEOUT HELPER =====
-// AbortSignal.timeout() cannot be cloned by HLS.js postMessage — use AbortController instead
+// ===== PULL TO REFRESH =====
+(function(){
+  const mainEl=document.getElementById('main');
+  const ptr=document.getElementById('ptr-indicator');
+  const ptrText=ptr.querySelector('.ptr-text');
+  const ptrArrow=ptr.querySelector('.ptr-arrow');
+  const ptrSpinner=ptr.querySelector('.ptr-spinner');
+  let startY=0,pulling=false,ptrDist=0;
+  const THRESHOLD=70,MAX=120;
+
+  mainEl.addEventListener('touchstart',function(e){
+    if(mainEl.scrollTop<=0 && window.innerWidth<=700){
+      startY=e.touches[0].clientY;pulling=true;ptrDist=0;
+    }
+  },{passive:true});
+
+  mainEl.addEventListener('touchmove',function(e){
+    if(!pulling) return;
+    const dy=e.touches[0].clientY-startY;
+    if(dy<0){pulling=false;ptr.className='';ptr.style.transform='translateX(-50%) translateY(-60px)';return;}
+    ptrDist=Math.min(dy*.45,MAX);
+    ptr.style.transform=`translateX(-50%) translateY(${ptrDist-10}px)`;
+    ptr.classList.add('pulling');
+    if(ptrDist>=THRESHOLD){
+      ptr.classList.add('ready');
+      ptrText.textContent='Release to refresh';
+    }else{
+      ptr.classList.remove('ready');
+      ptrText.textContent='Pull to refresh';
+    }
+  },{passive:true});
+
+  mainEl.addEventListener('touchend',function(){
+    if(!pulling) return;
+    pulling=false;
+    if(ptrDist>=THRESHOLD){
+      ptr.classList.remove('pulling','ready');
+      ptr.classList.add('refreshing');
+      ptrArrow.style.display='none';
+      ptrSpinner.style.display='inline-block';
+      ptrText.textContent='Refreshing…';
+      ptr.style.transform='translateX(-50%) translateY(20px)';
+      // reload streams
+      streamsReady=false;
+      loadStreamsBackground().then(()=>{
+        showToast('🔄 Channels refreshed!');
+      }).catch(()=>{
+        showToast('⚠️ Refresh failed');
+      }).finally(()=>{
+        ptr.classList.remove('refreshing');
+        ptrArrow.style.display='';
+        ptrSpinner.style.display='none';
+        ptrText.textContent='Pull to refresh';
+        ptr.style.transform='translateX(-50%) translateY(-60px)';
+        ptr.style.opacity='0';
+        setTimeout(()=>{ptr.style.opacity='';},350);
+      });
+    }else{
+      ptr.className='';
+      ptr.style.transform='translateX(-50%) translateY(-60px)';
+    }
+    ptrDist=0;
+  },{passive:true});
+})();
+
+
 function makeSignal(ms){
   const ac=new AbortController();
   const t=setTimeout(()=>ac.abort(),ms);
@@ -618,15 +842,19 @@ async function boot(){
     sp(70,'Rendering UI…');
     renderAll();
 
-    // Hide splash — show app
+    // Hide splash
     sp(100,'🇮🇳 Ready!');
     const splash=document.getElementById('splash');
     setTimeout(()=>{
       splash.classList.add('fade');
       setTimeout(()=>splash.style.display='none',400);
+      // Show keyboard hints briefly
+      const kb=document.getElementById('kb-hint');
+      kb.classList.add('show');
+      setTimeout(()=>kb.classList.remove('show'),5000);
     },350);
 
-    // Load streams in BACKGROUND (heavy file ~50MB)
+    // Load streams in BACKGROUND
     document.getElementById('stream-prog').classList.add('show');
     loadStreamsBackground();
 
@@ -644,7 +872,6 @@ async function loadStreamsBackground(){
     const prog=document.getElementById('s-prog-bar');
     const ptxt=document.getElementById('s-prog-txt');
     ptxt.textContent='0%';
-    // Fetch with progress tracking via ReadableStream
     const url=`${API}/streams.json`;
     let raw='';
     let loaded=0, total=0;
@@ -666,10 +893,9 @@ async function loadStreamsBackground(){
         }
       }
     };
-    try{ await tryFetch(url); }catch(e){ await tryFetch(`${PROXY}${encodeURIComponent(url)}`); }
+    try{ await tryFetch(url); }catch(e){ raw=''; loaded=0; total=0; await tryFetch(`${PROXY}${encodeURIComponent(url)}`); }
 
     streams=JSON.parse(raw);
-    // Build map
     sMap={};
     streams.forEach(s=>{ if(s.channel){ if(!sMap[s.channel]) sMap[s.channel]=[]; sMap[s.channel].push(s); }});
     streamsReady=true;
@@ -678,34 +904,38 @@ async function loadStreamsBackground(){
     const n=Object.keys(sMap).filter(id=>india.some(c=>c.id===id)).length;
     document.getElementById('stat-txt').style.display='inline';
     document.getElementById('stat-txt').textContent=`${india.length} ch · ${n} live`;
-    // Re-render to show live dots
+    showToast(`✅ ${n} live streams loaded!`);
     renderCards();
     if(cur) renderUpNext(cur);
   }catch(e){
     document.getElementById('stream-prog').classList.remove('show');
+    document.getElementById('dot').className='dot err';
     console.warn('Streams load failed:',e.message);
   }
 }
 
 // ===== BUILD INDIA LIST =====
 function buildIndia(){
-  // Channel → languages from feeds
   const cl={};
   feeds.forEach(f=>{ if(f.languages){ if(!cl[f.channel]) cl[f.channel]=new Set(); f.languages.forEach(l=>cl[f.channel].add(l)); }});
 
-  india=channels.filter(c=>{
-    if(c.is_nsfw||c.closed) return false;
-    const isIn=c.country==='IN';
-    const hasIL=[...(cl[c.id]||[])].some(l=>IN_LANGS.has(l));
-    return isIn||hasIL;
-  });
+  if(country==='ALL'){
+    india=channels.filter(c=>!c.is_nsfw&&!c.closed);
+  } else if(country==='IN'){
+    india=channels.filter(c=>{
+      if(c.is_nsfw||c.closed) return false;
+      const isIn=c.country==='IN';
+      const hasIL=[...(cl[c.id]||[])].some(l=>IN_LANGS.has(l));
+      return isIn||hasIL;
+    });
+  } else {
+    india=channels.filter(c=>!c.is_nsfw&&!c.closed&&c.country===country);
+  }
   india.forEach(c=>{ c._langs=cl[c.id]?[...cl[c.id]]:[] });
 
-  // Logo map
   lMap={};
   logos.forEach(l=>{ if(!lMap[l.channel]) lMap[l.channel]=l.url; });
 
-  // Update counts
   const catKeys=Object.keys(CATS);
   document.getElementById('n-all').textContent=india.length;
   catKeys.forEach(k=>{
@@ -727,6 +957,7 @@ function filtered(){
   if(lang!=='all') ch=ch.filter(c=>c._langs.includes(lang));
   if(q){ const lq=q.toLowerCase(); ch=ch.filter(c=>c.name.toLowerCase().includes(lq)||(c.alt_names&&c.alt_names.some(a=>a.toLowerCase().includes(lq)))); }
   if(sortBy==='live'&&streamsReady) ch=[...ch].sort((a,b)=>((sMap[b.id]||[]).length>0?1:0)-((sMap[a.id]||[]).length>0?1:0));
+  else ch=[...ch].sort((a,b)=>a.name.localeCompare(b.name));
   return ch;
 }
 
@@ -739,8 +970,9 @@ function renderCards(){
   const empty=document.getElementById('empty');
   const lm=document.getElementById('load-more');
   document.getElementById('count-lbl').textContent=`${ch.length} channels`;
-  const titles={all:'All India Channels',news:'News Channels',sports:'Sports Channels',entertainment:'Entertainment',lifestyle:'Fashion & Lifestyle',travel:'Travel & Adventure',science:'Science & Nature',education:'Education',music:'Music Channels',religious:'Spiritual & Religious',kids:'Kids Channels',documentary:'Documentary',general:'General Channels'};
-  document.getElementById('pg-title').innerHTML=`${titles[cat]||'India Channels'} <span class="live-tag">LIVE</span>`;
+  const cName=COUNTRY_NAMES[country]||country;
+  const titles={all:`All ${cName} Channels`,news:'News Channels',sports:'Sports Channels',entertainment:'Entertainment',lifestyle:'Fashion & Lifestyle',travel:'Travel & Adventure',science:'Science & Nature',education:'Education',music:'Music Channels',religious:'Spiritual & Religious',kids:'Kids Channels',documentary:'Documentary',general:'General Channels'};
+  document.getElementById('pg-title').innerHTML=`${titles[cat]||cName+' Channels'} <span class="live-tag">LIVE</span>`;
 
   if(!ch.length){ grid.innerHTML=''; empty.classList.add('show'); lm.classList.remove('show'); return; }
   empty.classList.remove('show');
@@ -748,7 +980,6 @@ function renderCards(){
   grid.innerHTML=slice.map((c,i)=>cardHTML(c,i)).join('');
   lm.classList.toggle('show', ch.length>slice.length);
   lm.dataset.total=ch.length;
-  // Events
   grid.querySelectorAll('.ch-card').forEach(el=>{
     el.addEventListener('click',()=>{
       const c=india.find(x=>x.id===el.dataset.id);
@@ -778,9 +1009,9 @@ function cardHTML(c,i){
   const catLbl=CATS[mapCat(pc)]||pc;
   const langs=c._langs.filter(l=>['hin','bho','eng','pan','ben','tam','tel','kan','mar','guj'].includes(l)).slice(0,2);
   const isNow=cur&&cur.id===c.id;
-  return `<div class="ch-card${isNow?' now':''} card-in" data-id="${c.id}" style="animation-delay:${Math.min(i*12,240)}ms">
+  return `<div class="ch-card${isNow?' now':''} card-in" data-id="${c.id}" style="animation-delay:${Math.min(i*15,300)}ms">
     <div class="ch-thumb">
-      ${logo?`<img src="${logo}" loading="lazy" alt="" onerror="this.style.display='none'">`:`<div class="no-lg">${c.name.slice(0,2).toUpperCase()}</div>`}
+      ${logo?`<img src="${logo}" loading="lazy" alt="${c.name}" onerror="this.style.display='none'">`:`<div class="no-lg">${c.name.slice(0,2).toUpperCase()}</div>`}
       <div class="play-ov"><div class="play-circle"><div class="play-tri"></div></div></div>
       ${streamsReady?(hasStream?'<div class="live-ind"></div>':'<div class="no-stream-ind">No stream</div>'):''}
     </div>
@@ -796,12 +1027,38 @@ function cardHTML(c,i){
 
 document.getElementById('load-more').addEventListener('click',()=>{ page++; renderCards(); });
 
+// ===== SORT BUTTONS =====
+document.querySelectorAll('.sort-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    sortBy=btn.dataset.s;
+    document.querySelectorAll('.sort-btn').forEach(b=>b.classList.toggle('on',b===btn));
+    renderAll();
+  });
+});
+
+// ===== THEATER MODE =====
+function toggleTheater(){
+  const pw=document.getElementById('player-wrap');
+  if(!pw.classList.contains('open')) return;
+  theaterMode=!theaterMode;
+  pw.classList.toggle('theater',theaterMode);
+  document.body.style.overflow=theaterMode?'hidden':'';
+  showToast(theaterMode?'🖥 Theater Mode ON — hover for info':'Theater Mode OFF');
+}
+
+document.getElementById('theater-close').addEventListener('click',(e)=>{
+  e.stopPropagation();
+  if(theaterMode) toggleTheater();
+  else closePlayer();
+});
+
+document.getElementById('pb-theater').addEventListener('click',toggleTheater);
+
 // ===== PLAY =====
 function playChannel(c){
   cur=c;
   const pw=document.getElementById('player-wrap');
   pw.classList.add('open');
-  // Scroll player into view on mobile
   if(window.innerWidth<700) pw.scrollIntoView({behavior:'smooth'});
 
   document.getElementById('p-title').textContent=c.name;
@@ -839,6 +1096,7 @@ function playChannel(c){
   tryPlay(s.url,ss,0,ov,vid,c);
   renderUpNext(c);
   renderCards();
+  showToast('▶ Playing: '+c.name);
 }
 
 function tryPlay(url,ss,idx,ov,vid,c){
@@ -897,26 +1155,38 @@ function setupBtns(c,url){
     navigator.clipboard.writeText(url).then(()=>{
       const ok=document.getElementById('copy-ok');
       ok.style.display='inline'; setTimeout(()=>ok.style.display='none',1800);
+      showToast('📋 URL copied!');
     });
   };
-  document.getElementById('pb-fs').onclick=()=>document.getElementById('vid').requestFullscreen&&document.getElementById('vid').requestFullscreen();
+  // BUG FIX: Fullscreen with webkit fallback
+  document.getElementById('pb-fs').onclick=()=>{
+    const vid=document.getElementById('vid');
+    if(vid.requestFullscreen) vid.requestFullscreen();
+    else if(vid.webkitRequestFullscreen) vid.webkitRequestFullscreen();
+    else if(vid.webkitEnterFullScreen) vid.webkitEnterFullScreen();
+    else showToast('Fullscreen not supported');
+  };
 }
 
-document.getElementById('pb-close').addEventListener('click',()=>{
-  document.getElementById('player-wrap').classList.remove('open');
+function closePlayer(){
+  const pw=document.getElementById('player-wrap');
+  if(theaterMode){ theaterMode=false; pw.classList.remove('theater'); document.body.style.overflow=''; }
+  pw.classList.remove('open');
   if(hls){hls.destroy();hls=null;}
   document.getElementById('vid').src='';
   cur=null; renderCards();
-});
+}
+
+document.getElementById('pb-close').addEventListener('click',closePlayer);
 
 function renderUpNext(c){
-  const others=filtered().filter(x=>x.id!==c.id).slice(0,6);
+  const others=filtered().filter(x=>x.id!==c.id).slice(0,8);
   document.getElementById('un-list').innerHTML=others.map(o=>{
     const lg=lMap[o.id];
     const pc=o.categories&&o.categories[0]||'general';
     return `<div class="un-item" data-id="${o.id}">
       <div class="un-logo">${lg?`<img src="${lg}" loading="lazy" alt="" onerror="this.style.display='none'">`:`<span style="font-size:10px;font-weight:700;color:var(--txt3)">${o.name.slice(0,2)}</span>`}</div>
-      <div><div class="un-name">${o.name}</div><div class="un-cat">${CATS[mapCat(pc)]||pc}</div></div>
+      <div style="min-width:0"><div class="un-name">${o.name}</div><div class="un-cat">${CATS[mapCat(pc)]||pc}</div></div>
     </div>`;
   }).join('');
   document.getElementById('un-list').querySelectorAll('.un-item').forEach(el=>{
@@ -936,15 +1206,76 @@ document.getElementById('cats').addEventListener('click',e=>{
 });
 document.getElementById('langs').addEventListener('click',e=>{
   const el=e.target.closest('.lc');
-  if(!el) return;
+  if(!el||!el.dataset.l) return;
   lang=el.dataset.l;
-  document.querySelectorAll('.lc').forEach(x=>x.classList.remove('on'));
+  document.querySelectorAll('#langs .lc').forEach(x=>x.classList.remove('on'));
   el.classList.add('on');
   renderAll();
+});
+document.getElementById('countries').addEventListener('click',e=>{
+  const el=e.target.closest('.lc');
+  if(!el||!el.dataset.co) return;
+  country=el.dataset.co;
+  document.querySelectorAll('#countries .lc').forEach(x=>x.classList.remove('on'));
+  el.classList.add('on');
+  buildIndia();
+  renderAll();
+  showToast('🌍 '+(COUNTRY_NAMES[country]||country)+': '+india.length+' channels');
+  if(window.innerWidth<700) closeSb();
 });
 let st;
 document.getElementById('srch').addEventListener('input',e=>{
   clearTimeout(st); st=setTimeout(()=>{ q=e.target.value.trim(); renderAll(); },220);
+});
+
+// ===== KEYBOARD SHORTCUTS =====
+document.addEventListener('keydown',e=>{
+  // Don't trigger if typing in search
+  if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA'){
+    if(e.key==='Escape'){ e.target.blur(); return; }
+    return;
+  }
+  switch(e.key){
+    case 'Escape':
+      if(theaterMode) toggleTheater();
+      else if(cur) closePlayer();
+      break;
+    case ' ':
+      e.preventDefault();
+      const vid=document.getElementById('vid');
+      if(vid.src){ vid.paused?vid.play():vid.pause(); showToast(vid.paused?'⏸ Paused':'▶ Playing'); }
+      break;
+    case 't': case 'T':
+      toggleTheater();
+      break;
+    case 'f': case 'F':
+      if(cur) document.getElementById('pb-fs').click();
+      break;
+    case '/':
+      e.preventDefault();
+      document.getElementById('srch').focus();
+      break;
+    case '?':
+      const kb=document.getElementById('kb-hint');
+      kb.classList.toggle('show');
+      break;
+  }
+});
+
+// ===== DOUBLE-CLICK VIDEO FOR THEATER =====
+document.getElementById('p-vid-box').addEventListener('dblclick',(e)=>{
+  e.preventDefault();
+  toggleTheater();
+});
+
+// ===== LOGO CLICK =====
+document.getElementById('logo').addEventListener('click',()=>{
+  cat='all';lang='all';q='';
+  document.getElementById('srch').value='';
+  document.querySelectorAll('.cat-item').forEach(x=>x.classList.toggle('on',x.dataset.c==='all'));
+  document.querySelectorAll('.lc').forEach(x=>x.classList.toggle('on',x.dataset.l==='all'));
+  renderAll();
+  document.getElementById('main').scrollTo({top:0,behavior:'smooth'});
 });
 
 // ===== RETRY BTN =====
@@ -958,4 +1289,4 @@ setTimeout(()=>{
 boot();
 </script>
 </body>
-</html>
+  </html>
