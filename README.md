@@ -8,4 +8,4 @@ https://bugbash-fullscreen-joy.lovable.app/
 -----------------------
 site 3
 -----------------------
-bharattv-online.wasmer.app
+https://bharattv-online.wasmer.app/
