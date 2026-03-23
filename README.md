@@ -1,10 +1,11 @@
-
+site 1
+--‐--------------------
 https://bharat-tv-iptv-online.edgeone.app/
-
-
-open in chrome in desktop mode on.
-
-
----NEW VERSION----
-
-https://bugbash-fullscreen-joy.lovable.app/BharatTV.html
+-----------------------
+site 2
+-----------------------
+https://bugbash-fullscreen-joy.lovable.app/
+-----------------------
+site 3
+-----------------------
+bharattv-online.wasmer.app
