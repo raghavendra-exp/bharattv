@@ -156,9 +156,7 @@ https://bharat-tv-iptv-online.edgeone.app/
 
 -----------------------
 site 2
------------------------
-
-https://bugbash-fullscreen-joy.lovable.app/
+https://bharat-tv-free-live.lovable.app//
 
 -----------------------
 site 3
