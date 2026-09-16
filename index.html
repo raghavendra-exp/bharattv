@@ -2,13 +2,92 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline';">
   <meta http-equiv="refresh" content="0; url=https://bugbash-fullscreen-joy.lovable.app/">
+  <link rel="preconnect" href="https://bugbash-fullscreen-joy.lovable.app/">
+  <link rel="dns-prefetch" href="https://bugbash-fullscreen-joy.lovable.app/">
+
   <title>Redirecting...</title>
+
+  <style>
+    :root {
+      --bg-color: #f9fafb;
+      --text-color: #111827;
+      --spinner-color: #3b82f6;
+      --link-color: #2563eb;
+      --secondary-text: #4b5563;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg-color: #111827;
+        --text-color: #f9fafb;
+        --spinner-color: #60a5fa;
+        --link-color: #60a5fa;
+        --secondary-text: #9ca3af;
+      }
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      text-align: center;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    .spinner {
+      width: 48px;
+      height: 48px;
+      border: 4px solid rgba(156, 163, 175, 0.2);
+      border-left-color: var(--spinner-color);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: 24px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    h1 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin: 0 0 8px 0;
+    }
+
+    p {
+      font-size: 1rem;
+      color: var(--secondary-text);
+      margin: 0;
+    }
+
+    a {
+      color: var(--link-color);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+
   <script>
     window.location.href = "https://bugbash-fullscreen-joy.lovable.app/";
   </script>
 </head>
 <body>
-  <p>Redirecting... <a href="https://bugbash-fullscreen-joy.lovable.app/">Click here</a> if not redirected automatically.</p>
+  <div class="spinner"></div>
+  <h1>Redirecting...</h1>
+  <p>If you are not redirected automatically, <a href="https://bugbash-fullscreen-joy.lovable.app/" rel="noopener noreferrer">click here</a>.</p>
 </body>
 </html>
